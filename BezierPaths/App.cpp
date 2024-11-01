@@ -31,7 +31,9 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     }
     else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
     {
-        app->draw = true;      
+        std::cout << "TRUE_DRAW\n";
+        std::cout << app->selectedPoints.size()<<"\n";
+        app->draw = true;
     }
 }
 
@@ -100,39 +102,6 @@ void Application::updateCurvePoints(glm::vec2 P0, glm::vec2 P1, glm::vec2 P2)
     }
 }
 
-int binomC(int n, int k) {
-    int res = 1;
-    if (k > n - k) k = n - k; 
-    for (int i = 0; i < k; ++i) {
-        res *= (n - i);
-        res /= (i + 1);
-    }
-    return res;
-}
-
-void Application::nBezierCurve(std::vector<glm::vec2>& points)
-{
-    int n = points.size();
-
-    if (t <= 1.0f)
-    {
-        glm::vec2 point(0.0f, 0.0f);
-
-        for (int i = 0; i < n; i++)
-        {
-            float bernstinPoly = binomC(n-1, i) * std::pow(t,i) * std::pow(1 - t, n - 1 - i);
-            point += points[i] * bernstinPoly;
-        }
-
-        curveVertices.push_back(point);
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, curveVertices.size() * sizeof(glm::vec2), curveVertices.data());
-
-        t += dt;
-    }
-}
-
 std::vector<glm::vec2> generateRandomVec2Vector(size_t count) {
     std::vector<glm::vec2> vec;
     vec.reserve(count);
@@ -171,32 +140,14 @@ void Application::Run()
 
     int maxCurvePoints = static_cast<int>(1.0f / dt) + 1;
 
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+    std::vector<glm::vec2> points = generateRandomVec2Vector(20);
 
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * maxCurvePoints, nullptr, GL_DYNAMIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
-    glEnableVertexAttribArray(0);
-
-
-    glGenVertexArrays(1, &VAO2);
-    glGenBuffers(1, &VBO2);
-
-    glBindVertexArray(VAO2);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 2, nullptr, GL_DYNAMIC_DRAW);
-
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
-    glEnableVertexAttribArray(0);
 
     glm::vec2 P0(0.32f, 0.0f);
     glm::vec2 P1(-1.0f, 0.25f);
     glm::vec2 P2(0.23f, -0.80f);
 
-    std::vector<glm::vec2> points = generateRandomVec2Vector(20);
+   
     
 
 
@@ -210,11 +161,27 @@ void Application::Run()
         //updateCurvePoints(P0, P1, P2);
         if (draw == true)
         {
-            nBezierCurve(selectedPoints);
 
-            ss.use();
+            if (bezierCurve == nullptr)
+            {
+                bezierCurve = new Curve(selectedPoints);
+                bezierCurve->AddBinds();
+            }
 
-            renderCurve();
+           //nBezierCurve(selectedPoints);
+
+           bezierCurve->CreateCurve();
+
+            //ss.use();
+
+           bezierCurve->GetShader()->use();
+
+           bezierCurve->DrawCurve();
+           //renderCurve();
+
+
+
+        
         }
      
 

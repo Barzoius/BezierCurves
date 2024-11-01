@@ -4,7 +4,7 @@
 
 #include "memory"
 
-
+#include "Curve.h"
 
 
 class Application
@@ -25,7 +25,7 @@ public:
     void updateCurvePoints(glm::vec2 P0, glm::vec2 P1, glm::vec2 P2);
     void renderCurve();
 
-    void nBezierCurve(std::vector<glm::vec2>& points);
+
 
     GLuint VAO, VBO;
 
@@ -37,14 +37,17 @@ public:
     std::vector<glm::vec2> segment;
 
 
-
     float t = 0.0f;
     float dt = 0.01f;
 
     bool draw = false;
+
+
 private:
     std::unique_ptr<Window> mWindow;
     bool mIsRunning = true;
+
+    Curve* bezierCurve;
 
     //Camera camera;
     
