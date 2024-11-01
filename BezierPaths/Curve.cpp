@@ -16,8 +16,6 @@ int Curve::BinomC(int n, int k) {
 Curve::Curve(std::vector<glm::vec2>& points)
     :controlPoints(points)
 {
-    std::cout << controlPoints.size()<<" controlP\n";
-    std::cout << points.size() << " parmeter\n";
 
     maxCurvePoints = static_cast<int>(1.0f / dt) + 1;
 
@@ -26,6 +24,7 @@ Curve::Curve(std::vector<glm::vec2>& points)
         { "Shader/fragment.glsl", Shader::ShaderType::FRAGMENT }
     }));
 
+    controlVBO.Populate(controlPoints);
     curveVBO.AddVertexCap(maxCurvePoints);
 
    
@@ -34,6 +33,7 @@ Curve::Curve(std::vector<glm::vec2>& points)
 void Curve::CreateCurve()
 {
     int n = controlPoints.size();
+    //std::cout << n<<" \n";
 
     if (t <= 1.0f)
     {
@@ -43,6 +43,13 @@ void Curve::CreateCurve()
         {
             float bernstinPoly = BinomC(n - 1, i) * std::pow(t, i) * std::pow(1 - t, n - 1 - i);
             point += controlPoints[i] * bernstinPoly;
+
+            if (i + 1 < n)
+            {
+                glm::vec2 L = (1 - t) * controlPoints[i] + t * controlPoints[i + 1];
+                lerpLines.push_back(L);
+            }
+
         }
 
         curveStrip.push_back(point);
@@ -52,6 +59,23 @@ void Curve::CreateCurve()
         glBindBuffer(GL_ARRAY_BUFFER, curveVBO.GetID());
         glBufferSubData(GL_ARRAY_BUFFER, 0, curveStrip.size() * sizeof(glm::vec2), curveStrip.data());
 
+
+        t += dt;
+    }
+}
+
+void Curve::CreateQudricCurve(glm::vec2 P0, glm::vec2 P1, glm::vec2 P2)
+{
+    if (t <= 1.0f) {
+        glm::vec2 point = (1 - t) * (1 - t) * P0 + 2 * (1 - t) * t * P1 + t * t * P2;
+
+        glm::vec2 L01 = (1 - t) * P0 + t * P1;
+        glm::vec2 L12 = (1 - t) * P1 + t * P2;
+
+        curveStrip.push_back(point);    
+
+        glBindBuffer(GL_ARRAY_BUFFER, curveVBO.GetID());
+        glBufferSubData(GL_ARRAY_BUFFER, 0, curveStrip.size() * sizeof(glm::vec2), curveStrip.data());
 
         t += dt;
     }
@@ -72,10 +96,18 @@ void Curve::AddBinds()
 {
     curveVAO.Bind();
     curveVBO.Bind();
+
+    controlVAO.Bind();
+    controlVBO.Bind();
+
+    lerpVAO.Bind();
+    lerpVBO.Bind();
+
 }
 
 void Curve::DrawCurve()
 {
+    //glLineWidth(4.0);
     glBindVertexArray(curveVAO.GetID());
     glDrawArrays(GL_LINE_STRIP, 0, curveStrip.size());
 }
@@ -83,4 +115,28 @@ void Curve::DrawCurve()
 void Curve::DrawCurveCreation()
 {
 
+    glBindVertexArray(controlVAO.GetID());
+    glPointSize(10.0f);
+    glDrawArrays(GL_POINTS, 0, controlPoints.size());
+    glDrawArrays(GL_LINE_STRIP, 0, controlPoints.size());
+
+}
+
+void Curve::ClearBuffers()
+{
+    curveStrip.clear();
+    glBindBuffer(GL_ARRAY_BUFFER, curveVBO.GetID());
+    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+
+    controlPoints.clear();
+    glBindBuffer(GL_ARRAY_BUFFER, controlVBO.GetID());
+    glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
+}
+
+void Curve::UpdateControlPoints(std::vector<glm::vec2>& points)
+{
+    std::cout << "UPDATE\n";
+    controlPoints = points;
+    ClearBuffers();          
+    AddBinds();
 }

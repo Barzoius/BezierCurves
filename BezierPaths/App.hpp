@@ -41,13 +41,17 @@ public:
     float dt = 0.01f;
 
     bool draw = false;
+    Curve* bezierCurve;
+
+    glm::mat4 orthoMatrix, rotMatrix, transMatrix;
+    float xMin = -400.f, xMax = 400.f, yMin = -300.f, yMax = 300.f;
 
 
 private:
     std::unique_ptr<Window> mWindow;
     bool mIsRunning = true;
 
-    Curve* bezierCurve;
+
 
     //Camera camera;
     

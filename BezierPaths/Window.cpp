@@ -121,6 +121,10 @@ void Window::ProcessInput()
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
+    if (glfwGetKey(mWindow, GLFW_KEY_E) == GLFW_PRESS)
+    {
+        erase = true;
+    }
 
     //if (glfwGetKey(mWindow, GLFW_KEY_W) == GLFW_PRESS)
     //    mCamera.processKeyInput(Camera::FORWARD, deltaTime);
@@ -150,6 +154,11 @@ int Window::GetWidth() const noexcept
 int Window::GetHeight() const noexcept
 {
     return mData.Height;
+}
+
+bool Window::GetErase() const noexcept
+{
+    return erase;
 }
 
 void Window::ShutDown()

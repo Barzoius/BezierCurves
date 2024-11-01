@@ -25,8 +25,14 @@ public:
 
     void CreateCurve();
 
+    void CreateQudricCurve(glm::vec2 P0, glm::vec2 P1, glm::vec2 P2);
+
+    void ClearBuffers();
+
     void AddShaderProgram(std::unique_ptr<ShaderSuite> ss) noexcept;
     ShaderSuite* GetShader() const noexcept;
+
+    void UpdateControlPoints(std::vector<glm::vec2>& points);
 
 
 private:

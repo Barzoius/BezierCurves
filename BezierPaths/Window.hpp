@@ -25,6 +25,8 @@ public:
     int GetWidth() const noexcept;
     int GetHeight() const noexcept;
 
+    bool GetErase() const noexcept;
+
     GLFWwindow* GetWindow() const noexcept;
    /* Camera GetCmaera() const noexcept
     {
@@ -51,7 +53,7 @@ private:
     SWindow_Mdata mData;
 
 public:
-
+    bool erase = false;
     //Camera mCamera;
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;

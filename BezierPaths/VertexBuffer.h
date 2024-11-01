@@ -25,16 +25,43 @@ public:
         glDeleteBuffers(1, &ID);
     }
 
+    void Populate(const std::vector<VERTEX>& vertices)
+    {
+        withcap = false;
+        mVertices.reserve(vertices.size());
+        sizeVERTEX = sizeof(VERTEX);
+
+        for (const auto& vertex : vertices)
+        {
+            mVertices.push_back(vertex);
+        }
+
+        glGenBuffers(1, &ID);
+
+    }
+
+
 
     void Bind()
     {
+
         glBindBuffer(GL_ARRAY_BUFFER, ID);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * maxVerticies, nullptr, GL_DYNAMIC_DRAW);
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
-        glEnableVertexAttribArray(0);
+        if (withcap == true)
+        {
+            glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * maxVerticies, nullptr, GL_DYNAMIC_DRAW);
 
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+            glEnableVertexAttribArray(0);
+        }
+        else
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, ID);
+            glBufferData(GL_ARRAY_BUFFER, mVertices.size() * sizeVERTEX, mVertices.data(), GL_STATIC_DRAW);
 
+            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+            glEnableVertexAttribArray(0);
+        }
     }
 
     void BindSub()
@@ -72,5 +99,6 @@ private:
     size_t sizeVERTEX;
     std::vector<VERTEX> mVertices; 
 
+    bool withcap = true;
     int maxVerticies;
 };

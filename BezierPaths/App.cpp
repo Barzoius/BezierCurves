@@ -32,7 +32,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     else if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
     {
         std::cout << "TRUE_DRAW\n";
-        std::cout << app->selectedPoints.size()<<"\n";
+        std::cout << "selectedPoints: " << app->selectedPoints.size() << "\n";
         app->draw = true;
     }
 }
@@ -147,20 +147,36 @@ void Application::Run()
     glm::vec2 P1(-1.0f, 0.25f);
     glm::vec2 P2(0.23f, -0.80f);
 
-   
-    
+    orthoMatrix = glm::ortho(xMin, xMax, yMin, yMax);
 
+    
+    bool deleted = false;
 
     while (!glfwWindowShouldClose(mWindow->GetWindow()))
     {
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
         mWindow->ProcessInput();
+
+        
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //updateCurvePoints(P0, P1, P2);
+        if (mWindow->erase == true)
+        {
+            selectedPoints.clear();
+            //bezierCurve->ClearBuffers();
+            delete bezierCurve;
+            bezierCurve = nullptr;
+            mWindow->erase = false;
+            deleted = true;
+            draw = false;
+
+        }
+
         if (draw == true)
         {
+           
 
             if (bezierCurve == nullptr)
             {
@@ -168,22 +184,18 @@ void Application::Run()
                 bezierCurve->AddBinds();
             }
 
-           //nBezierCurve(selectedPoints);
 
            bezierCurve->CreateCurve();
-
-            //ss.use();
-
            bezierCurve->GetShader()->use();
 
+
            bezierCurve->DrawCurve();
-           //renderCurve();
+           bezierCurve->DrawCurveCreation();
 
-
-
-        
         }
-     
+
+        glBindVertexArray(0); 
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         mWindow->OnUpdate();
 
