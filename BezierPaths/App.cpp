@@ -95,8 +95,8 @@ void Application::updateCurvePoints(glm::vec2 P0, glm::vec2 P1, glm::vec2 P2)
 
         curveVertices.push_back(point);
 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, curveVertices.size() * sizeof(glm::vec2), curveVertices.data());
+        //glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        //glBufferSubData(GL_ARRAY_BUFFER, 0, curveVertices.size() * sizeof(glm::vec2), curveVertices.data());
 
         t += dt;
     }
@@ -120,11 +120,10 @@ std::vector<glm::vec2> generateRandomVec2Vector(size_t count) {
     return vec;
 }
 
-
 void Application::renderCurve()
 {
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_LINE_STRIP, 0, curveVertices.size());
+    //glBindVertexArray(VAO);
+    //glDrawArrays(GL_LINE_STRIP, 0, curveVertices.size());
 }
 
 
@@ -142,6 +141,9 @@ void Application::Run()
 
     std::vector<glm::vec2> points = generateRandomVec2Vector(20);
 
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+
 
     glm::vec2 P0(0.32f, 0.0f);
     glm::vec2 P1(-1.0f, 0.25f);
@@ -155,12 +157,18 @@ void Application::Run()
     while (!glfwWindowShouldClose(mWindow->GetWindow()))
     {
         glClearColor(0.25f, 0.25f, 0.25f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+ 
+
         mWindow->ProcessInput();
 
         
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+        projection = glm::perspective(glm::radians(45.0f), 
+                                    (float)mWindow->GetWidth() / (float)mWindow->GetHeight(), 0.1f, 100.0f);
+
+
 
         if (mWindow->erase == true)
         {

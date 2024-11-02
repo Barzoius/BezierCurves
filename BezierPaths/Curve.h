@@ -34,7 +34,7 @@ public:
 
     void UpdateControlPoints(std::vector<glm::vec2>& points);
 
-
+    std::vector<glm::vec2> GetCurvePoints() const;
 private:
 
     int BinomC(int n, int k);
@@ -45,6 +45,7 @@ private:
     float dt = 0.01f;
 
     int maxCurvePoints;
+    std::vector<std::vector<glm::vec2>> controlPolygons;
 
     std::unique_ptr<class ShaderSuite> pShaderProgram;
 
@@ -63,6 +64,8 @@ private:
     VertexArray creationVAO;
     VertexBuffer<glm::vec2> creationVBO;
     std::vector<glm::vec2> creationLines;
+
+
 
 
 };
