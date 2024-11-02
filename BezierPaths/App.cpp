@@ -8,6 +8,7 @@
 #include <cmath>
 #include <random> 
 
+
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     Application* app = static_cast<Application*>(glfwGetWindowUserPointer(window));
@@ -40,7 +41,7 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 
 Application::Application()
 {
-    mWindow = std::make_unique<Window>(800, 600, "TOY_GFX");
+    mWindow = std::make_unique<Window>(800, 600, "Bezier Paths");
 
 
 
@@ -75,12 +76,6 @@ void Application::OnEvent()
     if (glfwGetKey(mWindow->GetWindow(), GLFW_KEY_P) == GLFW_PRESS)
     {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }
-
-    if (glfwGetKey(mWindow->GetWindow(), GLFW_KEY_E) == GLFW_PRESS)
-    {
-        //glfwSetWindowShouldClose(mWindow->GetWindow(), true);
-        std::cout << "E";
     }
 
 }
@@ -127,6 +122,7 @@ void Application::renderCurve()
 }
 
 
+
 // 0.5, 1.0, 0.0 - nice green color 
 
 void Application::Run()
@@ -149,7 +145,7 @@ void Application::Run()
     glm::vec2 P1(-1.0f, 0.25f);
     glm::vec2 P2(0.23f, -0.80f);
 
-    orthoMatrix = glm::ortho(xMin, xMax, yMin, yMax);
+    rect = new Rectangle(1.0f);
 
     
     bool deleted = false;
@@ -160,20 +156,22 @@ void Application::Run()
  
 
         mWindow->ProcessInput();
+        
+   
 
         
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
         projection = glm::perspective(glm::radians(45.0f), 
-                                    (float)mWindow->GetWidth() / (float)mWindow->GetHeight(), 0.1f, 100.0f);
+                                    (float)mWindow->GetWidth() / (float)mWindow->GetHeight(), 0.0f, 10.0f);
 
+     
 
 
         if (mWindow->erase == true)
         {
             selectedPoints.clear();
-            //bezierCurve->ClearBuffers();
             delete bezierCurve;
             bezierCurve = nullptr;
             mWindow->erase = false;
@@ -194,13 +192,13 @@ void Application::Run()
 
 
            bezierCurve->CreateCurve();
-           bezierCurve->GetShader()->use();
-
+        
 
            bezierCurve->DrawCurve();
            bezierCurve->DrawCurveCreation();
 
         }
+
 
         glBindVertexArray(0); 
         glBindBuffer(GL_ARRAY_BUFFER, 0);

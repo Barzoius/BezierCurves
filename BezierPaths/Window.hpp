@@ -6,7 +6,6 @@
 #include <functional>
 #include <memory>
 
-//#include "Camera.hpp"
 
 class Window
 {
@@ -28,10 +27,7 @@ public:
     bool GetErase() const noexcept;
 
     GLFWwindow* GetWindow() const noexcept;
-   /* Camera GetCmaera() const noexcept
-    {
-        return mCamera;
-    }*/
+
 private:
     static void key_callback(GLFWwindow* window,
         int keycode,
@@ -54,7 +50,8 @@ private:
 
 public:
     bool erase = false;
-    //Camera mCamera;
+    bool viz = false;
+
     float deltaTime = 0.0f;
     float lastFrame = 0.0f;
 

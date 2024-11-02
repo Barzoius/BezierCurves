@@ -13,6 +13,8 @@
 
 #include "Shader.hpp"
 
+#include "Rectangle.hpp"
+
 class Curve
 {
 public:
@@ -35,14 +37,23 @@ public:
     void UpdateControlPoints(std::vector<glm::vec2>& points);
 
     std::vector<glm::vec2> GetCurvePoints() const;
+
+
+    Rectangle* rect;
+
+
+
 private:
 
     int BinomC(int n, int k);
+
 
 private:
 
     float t = 0.0f;
     float dt = 0.01f;
+
+  
 
     int maxCurvePoints;
     std::vector<std::vector<glm::vec2>> controlPolygons;
@@ -64,8 +75,6 @@ private:
     VertexArray creationVAO;
     VertexBuffer<glm::vec2> creationVBO;
     std::vector<glm::vec2> creationLines;
-
-
 
 
 };

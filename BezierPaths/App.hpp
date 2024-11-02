@@ -5,7 +5,7 @@
 #include "memory"
 
 #include "Curve.h"
-
+#include "Rectangle.hpp"
 
 class Application
 {
@@ -26,7 +26,6 @@ public:
     void renderCurve();
 
 
-
     GLuint VAO, VBO;
 
     GLuint VAO2, VBO2;
@@ -43,16 +42,13 @@ public:
     bool draw = false;
     Curve* bezierCurve;
 
-    glm::mat4 orthoMatrix, rotMatrix, transMatrix;
-    float xMin = -400.f, xMax = 400.f, yMin = -300.f, yMax = 300.f;
+    Rectangle* rect;
 
+    std::vector<glm::vec2> constructedCurve;
 
 private:
+
     std::unique_ptr<Window> mWindow;
     bool mIsRunning = true;
 
-
-
-    //Camera camera;
-    
 };

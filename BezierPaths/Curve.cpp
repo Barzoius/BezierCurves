@@ -16,6 +16,7 @@ int Curve::BinomC(int n, int k) {
 Curve::Curve(std::vector<glm::vec2>& points)
     :controlPoints(points)
 {
+    rect = new Rectangle(1.0f);
 
     maxCurvePoints = static_cast<int>(1.0f / dt) + 1;
 
@@ -55,6 +56,35 @@ void Curve::CreateCurve()
         }
         curveStrip.push_back(point);
 
+        rect->SetPosition(point);
+
+
+
+        
+        if (curveStrip.size() >= 3)
+        {
+            glm::vec2 P0 = curveStrip[curveStrip.size() - 3];
+            glm::vec2 P1 = curveStrip[curveStrip.size() - 2];
+            glm::vec2 P2 = curveStrip[curveStrip.size() - 1];
+
+            glm::vec2 L1 = P1 - P0;
+            glm::vec2 L2 = P2 - P1;
+
+            float angle = glm::dot(L1, L2) / (glm::length(L1) * glm::length(L2));
+
+            angle = glm::clamp(angle, -1.0f, 1.0f);
+
+            float angleRad = std::acos(angle);
+
+            float angleDeg = glm::degrees(angleRad);
+
+            glm::vec2 tangent = glm::normalize(P2 - P1);
+
+            angleRad = std::atan2(tangent.y, tangent.x);
+
+            rect->SetRotation(angleRad);
+
+        }
 
 
         std::vector<glm::vec2> currentControlPoly = controlPoints;
@@ -62,29 +92,25 @@ void Curve::CreateCurve()
         // Continue interpolating until we get down to a single point
         while (currentControlPoly.size() > 1)
         {
-            std::vector<glm::vec2> nextControlPoly;  // To store the next level's points
-            std::vector<glm::vec2> currentLerpLine;  // Store points for the current interpolation line
+            std::vector<glm::vec2> nextControlPoly;  
+            std::vector<glm::vec2> currentLerpLine; 
 
-            // Interpolate between each consecutive pair of points in the current level
             for (int i = 0; i < currentControlPoly.size() - 1; i++)
             {
                 glm::vec2 L = (1 - t) * currentControlPoly[i] + t * currentControlPoly[i + 1];
                 nextControlPoly.push_back(L);
-                currentLerpLine.push_back(L);  // Add to the current line's level
+                currentLerpLine.push_back(L);  
             }
 
-            // Store the current level's lerp points for separate rendering
             controlPolygons.push_back(currentLerpLine);
 
-            // Move to the next level
+
             currentControlPoly = nextControlPoly;
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, curveVBO.GetID());
         glBufferSubData(GL_ARRAY_BUFFER, 0, curveStrip.size() * sizeof(glm::vec2), curveStrip.data());
 
-        //glBindBuffer(GL_ARRAY_BUFFER, lerpVBO.GetID());
-        //glBufferSubData(GL_ARRAY_BUFFER, 0, lerpLines.size() * sizeof(glm::vec2), lerpLines.data());
 
         t += dt;  // t forward for the next frame
     }
@@ -142,9 +168,19 @@ std::vector<glm::vec2> Curve::GetCurvePoints() const
 
 void Curve::DrawCurve()
 {
-    //glLineWidth(4.0);
+
+    glm::mat4 model = glm::mat4(1.0f);
+
+    rect->DrawRectangle();
+
+    this->GetShader()->use();
+    this->GetShader()->setMat4("model", model);
+
+    glLineWidth(4.0);
     glBindVertexArray(curveVAO.GetID());
     glDrawArrays(GL_LINE_STRIP, 0, curveStrip.size());
+
+
 
     glBindVertexArray(lerpVAO.GetID());
     glPointSize(10.0f);
@@ -170,6 +206,8 @@ void Curve::DrawCurve()
             glDrawArrays(GL_LINE_STRIP, 0, points.size());
         }
     }
+
+
 }
 
 void Curve::DrawCurveCreation()
@@ -193,10 +231,3 @@ void Curve::ClearBuffers()
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 }
 
-void Curve::UpdateControlPoints(std::vector<glm::vec2>& points)
-{
-    std::cout << "UPDATE\n";
-    controlPoints = points;
-    ClearBuffers();          
-    AddBinds();
-}

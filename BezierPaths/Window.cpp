@@ -126,18 +126,6 @@ void Window::ProcessInput()
         erase = true;
     }
 
-    //if (glfwGetKey(mWindow, GLFW_KEY_W) == GLFW_PRESS)
-    //    mCamera.processKeyInput(Camera::FORWARD, deltaTime);
-    //if (glfwGetKey(mWindow, GLFW_KEY_S) == GLFW_PRESS)
-    //    mCamera.processKeyInput(Camera::BACKWARD, deltaTime);
-    //if (glfwGetKey(mWindow, GLFW_KEY_A) == GLFW_PRESS)
-    //    mCamera.processKeyInput(Camera::LEFT, deltaTime);
-    //if (glfwGetKey(mWindow, GLFW_KEY_D) == GLFW_PRESS)
-    //    mCamera.processKeyInput(Camera::RIGHT, deltaTime);
-    //if (glfwGetKey(mWindow, GLFW_KEY_R) == GLFW_PRESS)
-    //    mCamera.processKeyInput(Camera::UP, deltaTime);
-    //if (glfwGetKey(mWindow, GLFW_KEY_F) == GLFW_PRESS)
-    //    mCamera.processKeyInput(Camera::DOWN, deltaTime);
 
 }
 

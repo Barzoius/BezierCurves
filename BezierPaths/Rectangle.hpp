@@ -13,8 +13,8 @@ class Rectangle
 public:
     Rectangle(float size);
 
-    void SetPosition(glm::vec3 pos) noexcept;
-    //void SetRotation() noexcept;
+    void SetPosition(glm::vec2 pos) noexcept;
+    void SetRotation(float) noexcept;
 
     glm::mat4x4 GetTransformMatrix() const noexcept ;
 
@@ -34,14 +34,14 @@ private:
 
     std::vector<glm::vec2> rectangleVerticies;
 
-    glm::vec3 mPos = glm::vec3(0.0f, 0.0f, 0.0f);
+    glm::vec2 mPos = glm::vec2(0.0f, 0.0f);
 
     float roll = 0.0f;
     float pitch = 0.0f;
     float yaw = 0.0f;
 
-    float length = 2.0f;
-    float width = 1.0f;
+    float length = 0.15f;
+    float width = 0.1f;
 
 
 };

@@ -55,19 +55,22 @@ void Rectangle::DrawRectangle()
 
     this->GetShader()->setMat4("model", model);
 
-    //AddBinds();
-    //glLineWidth(4.0);
+    AddBinds();
+
     glDrawArrays(GL_TRIANGLE_FAN, 0, rectangleVerticies.size());
     glBindVertexArray(0);
 }
 
 
-void Rectangle::SetPosition(glm::vec3 pos) noexcept
+void Rectangle::SetPosition(glm::vec2 pos) noexcept
 {
     mPos.x = pos.x;
     mPos.y = pos.y;
-    mPos.z = pos.z;
+}
 
+void Rectangle::SetRotation(float rot) noexcept
+{
+    yaw = rot;
 }
 
 glm::mat4x4 Rectangle::GetTransformMatrix() const noexcept
@@ -76,7 +79,7 @@ glm::mat4x4 Rectangle::GetTransformMatrix() const noexcept
                          glm::rotate(glm::mat4(1.0f), pitch, glm::vec3(0.0f, 1.0f, 0.0f)) *  // Pitch (Y-axis)
                          glm::rotate(glm::mat4(1.0f), roll, glm::vec3(1.0f, 0.0f, 0.0f));    // Roll (X-axis)
 
-    glm::mat4 translation = glm::translate(glm::mat4(1.0f), mPos);
+    glm::mat4 translation = glm::translate(glm::mat4(1.0f), glm::vec3(mPos, 0.0f));
 
     return translation * rotation;
 }
