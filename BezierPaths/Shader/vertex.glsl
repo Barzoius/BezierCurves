@@ -3,8 +3,7 @@ layout (location = 0) in vec2 aPos;
   
 out vec4 vertexColor; 
 
-uniform mat4 projection;
-uniform mat4 view;
+
 uniform mat4 model;
 
 

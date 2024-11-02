@@ -4,7 +4,7 @@
 
 #include "memory"
 
-#include "Curve.h"
+#include "Curve.hpp"
 #include "Rectangle.hpp"
 
 class Application

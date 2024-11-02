@@ -180,6 +180,11 @@ void Application::Run()
 
         }
 
+        if (bezierCurve != nullptr)
+        {
+            bezierCurve->bViz = mWindow->viz;
+        }
+
         if (draw == true)
         {
            

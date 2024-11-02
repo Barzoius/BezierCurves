@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Bindable.h"
-#include "VertexBuffer.h"
+#include "Bindable.hpp"
+#include "VertexBuffer.hpp"
 
 
 class VertexArray : public Bindable

@@ -126,6 +126,11 @@ void Window::ProcessInput()
         erase = true;
     }
 
+    if (glfwGetKey(mWindow, GLFW_KEY_V) == GLFW_PRESS)
+    {
+        viz = !viz ;
+    }
+
 
 }
 

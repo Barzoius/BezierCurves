@@ -1,4 +1,4 @@
-#include "Curve.h"
+#include "Curve.hpp"
 
 #include <iostream>
 
@@ -171,7 +171,7 @@ void Curve::DrawCurve()
 
     glm::mat4 model = glm::mat4(1.0f);
 
-    rect->DrawRectangle();
+    //rect->DrawRectangle();
 
     this->GetShader()->use();
     this->GetShader()->setMat4("model", model);
@@ -215,8 +215,12 @@ void Curve::DrawCurveCreation()
 
     glBindVertexArray(controlVAO.GetID());
     glPointSize(10.0f);
-    glDrawArrays(GL_POINTS, 0, controlPoints.size());
-    glDrawArrays(GL_LINE_STRIP, 0, controlPoints.size());
+
+    if (bViz == true)
+    {
+        glDrawArrays(GL_POINTS, 0, controlPoints.size());
+        glDrawArrays(GL_LINE_STRIP, 0, controlPoints.size());
+    }
 
 }
 

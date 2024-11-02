@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "BindableObjects.h"
+#include "BindableObjects.hpp"
 #include "Shader.hpp"
 
 class Rectangle
