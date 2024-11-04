@@ -34,7 +34,6 @@ public:
     void AddShaderProgram(std::unique_ptr<ShaderSuite> ss) noexcept;
     ShaderSuite* GetShader() const noexcept;
 
-    void UpdateControlPoints(std::vector<glm::vec2>& points);
 
     std::vector<glm::vec2> GetCurvePoints() const;
 
@@ -57,6 +56,7 @@ private:
 
     int maxCurvePoints;
     std::vector<std::vector<glm::vec2>> controlPolygons;
+    std::vector<glm::vec3> stripsColors;
 
     std::unique_ptr<class ShaderSuite> pShaderProgram;
 

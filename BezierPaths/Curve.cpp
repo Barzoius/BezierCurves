@@ -2,6 +2,10 @@
 
 #include <iostream>
 
+#include <chrono>
+#include <cmath>
+#include <random> 
+
 int Curve::BinomC(int n, int k) {
     int res = 1;
     if (k > n - k) k = n - k;
@@ -10,6 +14,24 @@ int Curve::BinomC(int n, int k) {
         res /= (i + 1);
     }
     return res;
+}
+
+
+glm::vec3 generateRandomColor() 
+{
+
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<float> dis(-1.0f, 1.0f);
+
+    float x = dis(gen);
+    float y = dis(gen);
+    float z = dis(gen);
+
+    glm::vec3 color = glm::vec3(x, y, z);
+
+    return color;
 }
 
 
@@ -103,10 +125,17 @@ void Curve::CreateCurve()
             }
 
             controlPolygons.push_back(currentLerpLine);
+            stripsColors.push_back(generateRandomColor());
 
 
             currentControlPoly = nextControlPoly;
         }
+
+        //if (!currentControlPoly.empty())
+        //{
+        //    curveStrip.push_back(currentControlPoly[0]); // add 
+        //}
+
 
         glBindBuffer(GL_ARRAY_BUFFER, curveVBO.GetID());
         glBufferSubData(GL_ARRAY_BUFFER, 0, curveStrip.size() * sizeof(glm::vec2), curveStrip.data());
@@ -171,41 +200,50 @@ void Curve::DrawCurve()
 
     glm::mat4 model = glm::mat4(1.0f);
 
-    //rect->DrawRectangle();
+
+    this->rect->GetShader()->use();
+    this->rect->GetShader()->setVec3("color", glm::vec3(0.5, 1.0, 0.0));
+    rect->DrawRectangle();
 
     this->GetShader()->use();
     this->GetShader()->setMat4("model", model);
+    this->GetShader()->setVec3("color", glm::vec3(0.5, 1.0, 0.0));
 
     glLineWidth(4.0);
     glBindVertexArray(curveVAO.GetID());
     glDrawArrays(GL_LINE_STRIP, 0, curveStrip.size());
 
 
-
-    glBindVertexArray(lerpVAO.GetID());
-    glPointSize(10.0f);
-    glDrawArrays(GL_POINTS, 0, lerpLines.size());
-    glDrawArrays(GL_LINE_STRIP, 0, lerpLines.size());
-
-    glBindVertexArray(creationVAO.GetID());
-    glPointSize(10.0f);
-    glDrawArrays(GL_POINTS, 0, creationLines.size());
-    glDrawArrays(GL_LINE_STRIP, 0, creationLines.size());
-
+    int i = 0;
 
     for (const auto& points : controlPolygons)
     {
+       
+
+
+
         if (!points.empty())
         {
             glBindBuffer(GL_ARRAY_BUFFER, lerpVBO.GetID());
             glBufferData(GL_ARRAY_BUFFER, points.size() * sizeof(glm::vec2), points.data(), GL_DYNAMIC_DRAW);
 
             glBindVertexArray(lerpVAO.GetID());
+       
             glPointSize(10.0f);
+
+            this->GetShader()->use();
+
+            //this->GetShader()->setVec3("color", stripsColors[i]);
+            this->GetShader()->setVec3("color", glm::vec3(0.5, 1.0, 0.0));
+
             glDrawArrays(GL_POINTS, 0, points.size());
             glDrawArrays(GL_LINE_STRIP, 0, points.size());
         }
+
+        i++;
     }
+
+    i = 0;
 
 
 }
@@ -218,6 +256,9 @@ void Curve::DrawCurveCreation()
 
     if (bViz == true)
     {
+        this->GetShader()->use();
+
+        this->GetShader()->setVec3("color", glm::vec3(0.7, 0.7, 0.7));
         glDrawArrays(GL_POINTS, 0, controlPoints.size());
         glDrawArrays(GL_LINE_STRIP, 0, controlPoints.size());
     }
@@ -234,4 +275,10 @@ void Curve::ClearBuffers()
     glBindBuffer(GL_ARRAY_BUFFER, controlVBO.GetID());
     glBufferData(GL_ARRAY_BUFFER, 0, nullptr, GL_DYNAMIC_DRAW);
 }
+
+
+
+
+
+
 

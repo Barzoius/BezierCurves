@@ -97,7 +97,7 @@ void Application::updateCurvePoints(glm::vec2 P0, glm::vec2 P1, glm::vec2 P2)
     }
 }
 
-std::vector<glm::vec2> generateRandomVec2Vector(size_t count) {
+std::vector<glm::vec2> generateRandomVec2Set(size_t count) {
     std::vector<glm::vec2> vec;
     vec.reserve(count);
 
@@ -135,7 +135,7 @@ void Application::Run()
 
     int maxCurvePoints = static_cast<int>(1.0f / dt) + 1;
 
-    std::vector<glm::vec2> points = generateRandomVec2Vector(20);
+    std::vector<glm::vec2> points = generateRandomVec2Set(20);
 
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
@@ -210,7 +210,7 @@ void Application::Run()
 
         mWindow->OnUpdate();
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        std::this_thread::sleep_for(std::chrono::milliseconds(32));
     }
 
 }
