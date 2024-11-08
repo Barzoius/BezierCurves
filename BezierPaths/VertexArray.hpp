@@ -18,5 +18,4 @@ public:
     GLuint GetID();
 private:
     GLuint VA_ID;
-   // VertexBuffer vbuf;
 };

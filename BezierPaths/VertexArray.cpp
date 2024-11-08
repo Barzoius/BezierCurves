@@ -5,7 +5,6 @@ VertexArray::VertexArray()
 {
     glGenVertexArrays(1, &VA_ID);
 
-    std::cout << "ARRAY_BUF: " << VA_ID << "\n";
 }
 
 

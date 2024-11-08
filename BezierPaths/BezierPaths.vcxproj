@@ -140,6 +140,7 @@
     <ClInclude Include="App.hpp" />
     <ClInclude Include="Bindable.hpp" />
     <ClInclude Include="BindableObjects.hpp" />
+    <ClInclude Include="BSP.h" />
     <ClInclude Include="Curve.hpp" />
     <ClInclude Include="Rectangle.hpp" />
     <ClInclude Include="Shader.hpp" />
