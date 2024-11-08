@@ -33,6 +33,31 @@ where \( P_i \) represents the control points, and the first term in the sum is 
 The creation of Bezier curves is done through two functions in the `Curve` class: `CreateCurve()` and `DrawCurve()`. The `CreateCurve()` function handles populating the necessary buffers for representing the curve, while `DrawCurve()` is responsible for the actual drawing of the curve.
 
 
+<div style="display: flex; align-items: flex-start;">
+    <div style="margin-right: 20px;">
+        <pre class="col-md-6 col-md-offset-3">
+if (t <= 1.0f)
+{
+    glm::vec2 point(0.0f, 0.0f);
+    for (int i = 0; i < n; i++)
+    {
+        float bernsteinPoly = BinomC(n - 1, i) * std::pow(t, i) * std::pow(1 - t, n - 1 - i);
+        point += controlPoints[i] * bernsteinPoly;
+    }
+    curveStrip.push_back(point);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, curveVBO.GetID());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, curveStrip.size() * sizeof(glm::vec2), curveStrip.data());
+
+    t += dt;  // t forward for the next frame
+}
+        </pre>
+    </div>
+    <div>
+        <img src="BezierPaths/Resources/BezierPaths2.gif" alt="Bezier Curve" style="max-width: 300px;">
+    </div>
+</div>
+
 |  | |
 |---|---|
 |  ![](BezierPaths/Resources/BezierPaths.gif) | ![](BezierPaths/Resources/bezierPic1.png) |
@@ -40,3 +65,22 @@ The creation of Bezier curves is done through two functions in the `Curve` class
 |  ![](BezierPaths/Resources/BezierPathsRect1.gif) | ![](BezierPaths/Resources/BezierPathsRect2.gif) |
 
 
+ if (t <= 1.0f)
+ {
+
+     glm::vec2 point(0.0f, 0.0f);
+
+     for (int i = 0; i < n; i++)
+     {
+         float bernsteinPoly = BinomC(n - 1, i) * std::pow(t, i) * std::pow(1 - t, n - 1 - i);
+         point += controlPoints[i] * bernsteinPoly;
+
+     }
+     curveStrip.push_back(point);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, curveVBO.GetID());
+    glBufferSubData(GL_ARRAY_BUFFER, 0, curveStrip.size() * sizeof(glm::vec2), curveStrip.data());
+
+
+    t += dt;  // t forward for the next frame
+}

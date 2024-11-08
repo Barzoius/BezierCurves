@@ -67,76 +67,22 @@ void Curve::CreateCurve()
     if (t <= 1.0f)
     {
 
-        //glm::vec2 point(0.0f, 0.0f);
+        glm::vec2 point(0.0f, 0.0f);
 
-        //for (int i = 0; i < n; i++)
-        //{
-        //    float bernsteinPoly = BinomC(n - 1, i) * std::pow(t, i) * std::pow(1 - t, n - 1 - i);
-        //    point += controlPoints[i] * bernsteinPoly;
-
-        //    glm::vec2 L = (1 - t) * controlPoints[i] + t * controlPoints[i + 1];
-        //}
-        //curveStrip.push_back(point);
-
-        //rect->SetPosition(point);
-
-
-
-        //
-        //if (curveStrip.size() >= 3)
-        //{
-        //    glm::vec2 P0 = curveStrip[curveStrip.size() - 3];
-        //    glm::vec2 P1 = curveStrip[curveStrip.size() - 2];
-        //    glm::vec2 P2 = curveStrip[curveStrip.size() - 1];
-
-        //    glm::vec2 L1 = P1 - P0;
-        //    glm::vec2 L2 = P2 - P1;
-
-        //    float angle = glm::dot(L1, L2) / (glm::length(L1) * glm::length(L2));
-
-        //    angle = glm::clamp(angle, -1.0f, 1.0f);
-
-        //    float angleRad = std::acos(angle);
-
-        //    float angleDeg = glm::degrees(angleRad);
-
-        //    glm::vec2 tangent = glm::normalize(P2 - P1);
-
-        //    angleRad = std::atan2(tangent.y, tangent.x);
-
-        //    rect->SetRotation(angleRad);
-
-        //}
-
-
-        std::vector<glm::vec2> currentControlPoly = controlPoints;
-
-        // Continue interpolating until a single point
-        while (currentControlPoly.size() > 1)
+        for (int i = 0; i < n; i++)
         {
-            std::vector<glm::vec2> nextControlPoly;  
-            std::vector<glm::vec2> currentLerpLine; 
+            float bernsteinPoly = BinomC(n - 1, i) * std::pow(t, i) * std::pow(1 - t, n - 1 - i);
+            point += controlPoints[i] * bernsteinPoly;
 
-            for (int i = 0; i < currentControlPoly.size() - 1; i++)
-            {
-                glm::vec2 L = (1 - t) * currentControlPoly[i] + t * currentControlPoly[i + 1];
-                nextControlPoly.push_back(L);
-                currentLerpLine.push_back(L);  
-            }
-
-            controlPolygons.push_back(currentLerpLine);
-            stripsColors.push_back(generateRandomColor());
-
-
-            currentControlPoly = nextControlPoly;
+            //glm::vec2 L = (1 - t) * controlPoints[i] + t * controlPoints[i + 1];
         }
+        curveStrip.push_back(point);
 
-        if (!currentControlPoly.empty())
-        {
-            curveStrip.push_back(currentControlPoly[0]); // add 
-            rect->SetPosition(currentControlPoly[0]);
-        }
+        rect->SetPosition(point);
 
+
+
+        
         if (curveStrip.size() >= 3)
         {
             glm::vec2 P0 = curveStrip[curveStrip.size() - 3];
@@ -161,6 +107,60 @@ void Curve::CreateCurve()
             rect->SetRotation(angleRad);
 
         }
+
+
+        std::vector<glm::vec2> currentControlPoly = controlPoints;
+
+        // Continue interpolating until a single point
+        while (currentControlPoly.size() > 1)
+        {
+            std::vector<glm::vec2> nextControlPoly;  
+            std::vector<glm::vec2> currentLerpLine; 
+
+            for (int i = 0; i < currentControlPoly.size() - 1; i++)
+            {
+                glm::vec2 L = (1 - t) * currentControlPoly[i] + t * currentControlPoly[i + 1];
+                nextControlPoly.push_back(L);
+                currentLerpLine.push_back(L);  
+            }
+
+            controlPolygons.push_back(currentLerpLine);
+            stripsColors.push_back(generateRandomColor());
+
+
+            currentControlPoly = nextControlPoly;
+        }
+
+        //if (!currentControlPoly.empty())
+        //{
+        //    curveStrip.push_back(currentControlPoly[0]); // add 
+        //    rect->SetPosition(currentControlPoly[0]);
+        //}
+
+        //if (curveStrip.size() >= 3)
+        //{
+        //    glm::vec2 P0 = curveStrip[curveStrip.size() - 3];
+        //    glm::vec2 P1 = curveStrip[curveStrip.size() - 2];
+        //    glm::vec2 P2 = curveStrip[curveStrip.size() - 1];
+
+        //    glm::vec2 L1 = P1 - P0;
+        //    glm::vec2 L2 = P2 - P1;
+
+        //    float angle = glm::dot(L1, L2) / (glm::length(L1) * glm::length(L2));
+
+        //    angle = glm::clamp(angle, -1.0f, 1.0f);
+
+        //    float angleRad = std::acos(angle);
+
+        //    float angleDeg = glm::degrees(angleRad);
+
+        //    glm::vec2 tangent = glm::normalize(P2 - P1);
+
+        //    angleRad = std::atan2(tangent.y, tangent.x);
+
+        //    rect->SetRotation(angleRad);
+
+        //}
 
 
         glBindBuffer(GL_ARRAY_BUFFER, curveVBO.GetID());
@@ -259,8 +259,8 @@ void Curve::DrawCurve()
 
             this->GetShader()->use();
 
-            this->GetShader()->setVec3("color", stripsColors[i]);
-            //this->GetShader()->setVec3("color", glm::vec3(0.5, 1.0, 0.0));
+            //this->GetShader()->setVec3("color", stripsColors[i]);
+            this->GetShader()->setVec3("color", glm::vec3(0.5, 1.0, 0.0));
 
             glDrawArrays(GL_POINTS, 0, points.size());
             glDrawArrays(GL_LINE_STRIP, 0, points.size());
